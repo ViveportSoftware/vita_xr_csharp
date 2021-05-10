@@ -22,6 +22,7 @@
     <PackageReference Include="Htc.Vita.Core" Version="0.10.6.2" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\external\openvr_api\headers\openvr_api.cs" Link="External\openvr_api.cs" />
     <Compile Include="..\generated\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

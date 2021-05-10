@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using Htc.Vita.Core.Log;
+using Htc.Vita.Mod.Valve.VR;
 
 namespace Htc.Vita.XR
 {
@@ -27,7 +28,7 @@ namespace Htc.Vita.XR
             var isHmdPresent = false;
             try
             {
-                isHmdPresent = Interop.VRIsHmdPresent();
+                isHmdPresent = OpenVRInterop.IsHmdPresent();
                 isApiReady = true;
             }
             catch (Exception e)

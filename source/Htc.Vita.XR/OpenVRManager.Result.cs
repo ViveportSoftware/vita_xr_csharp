@@ -1,4 +1,4 @@
-﻿namespace Htc.Vita.XR
+namespace Htc.Vita.XR
 {
     public partial class OpenVRManager
     {

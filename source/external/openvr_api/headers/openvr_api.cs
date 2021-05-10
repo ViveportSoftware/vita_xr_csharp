@@ -4,17 +4,18 @@
 // This file is auto-generated, do not edit it.
 //
 //=============================================================================
+#pragma warning disable 1591
 #if !OPENVR_XR_API
 
 using System;
 using System.Runtime.InteropServices;
-using Valve.VR;
+using Htc.Vita.Mod.Valve.VR;
 
 #if UNITY_5_3_OR_NEWER
 using UnityEngine;
 #endif
 
-namespace Valve.VR
+namespace Htc.Vita.Mod.Valve.VR
 {
 
 [StructLayout(LayoutKind.Sequential)]
@@ -8217,4 +8218,5 @@ public class OpenVR
 
 }
 #endif
+#pragma warning restore 1591
 
