@@ -1,4 +1,4 @@
-# HTC Vita VR Libraries for .NET platform (Htc.Vita.VR)
+# HTC Vita XR Libraries for .NET platform (Htc.Vita.XR)
 
 ## Dependency
 
@@ -10,7 +10,6 @@ Package-time dependencies: none
 
 Run-time dependencies:
 
-* .NET 5.0
 * .NET Framework 4.5
 * .NET Standard 2.0
 * [Htc.Vita.Core](https://www.nuget.org/packages/Htc.Vita.Core/)
@@ -23,7 +22,6 @@ Test-time dependencies:
 
 Build-time dependencies:
 
-* .NET 5.0
 * .NET Framework 4.6.1
 
 Build-time Prerequisite (macOS):
