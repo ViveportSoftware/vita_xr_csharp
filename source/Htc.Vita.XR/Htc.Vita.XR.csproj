@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Htc.Vita.XR</RootNamespace>
+    <AssemblyName>Htc.Vita.XR</AssemblyName>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
+    <DebugType>portable</DebugType>
+    <IntermediateOutputPath>..\..\temp\$(Configuration)\$(AssemblyName)\obj</IntermediateOutputPath>
+    <OutputPath>..\..\temp\$(Configuration)\$(AssemblyName)\bin</OutputPath>
+    <DocumentationFile>..\..\temp\$(Configuration)\$(AssemblyName)\bin\$(AssemblyName).xml</DocumentationFile>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>6</LangVersion>
+    <DefineConstants>$(DefineConstants);NATIVE_LIBRARY_EMBEDDED</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <Authors>HTC</Authors>
+    <PackageDescription>HTC Vita XR module</PackageDescription>
+    <PackageProjectUrl>https://github.com/ViveportSoftware/vita_xr_csharp/</PackageProjectUrl>
+    <PackageTags>htc;vita;xr</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Htc.Vita.Core" Version="0.10.6.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\generated\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\external\openvr_api\bin\win64\openvr_api.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>x64\openvr_api.dll</Link>
+      <Pack>false</Pack>
+    </Content>
+    <EmbeddedResource Include="..\external\openvr_api\bin\win64\openvr_api.dll.gz">
+      <Link>x64\openvr_api.dll.gz</Link>
+    </EmbeddedResource>
+    <Content Include="..\external\openvr_api\bin\win32\openvr_api.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>x86\openvr_api.dll</Link>
+      <Pack>false</Pack>
+    </Content>
+    <EmbeddedResource Include="..\external\openvr_api\bin\win32\openvr_api.dll.gz">
+      <Link>x86\openvr_api.dll.gz</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
