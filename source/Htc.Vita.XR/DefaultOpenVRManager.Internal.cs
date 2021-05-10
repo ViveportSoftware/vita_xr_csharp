@@ -179,5 +179,10 @@ namespace Htc.Vita.XR
                 );
             }
         }
+
+        internal static class Library
+        {
+            internal const string OpenVRApi = "openvr_api";
+        }
     }
 }
