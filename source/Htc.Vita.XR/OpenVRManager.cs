@@ -109,6 +109,25 @@ namespace Htc.Vita.XR
         }
 
         /// <summary>
+        /// Enables the home application.
+        /// </summary>
+        /// <param name="homeAppEnabled">if set to <c>true</c> the home application should be enabled.</param>
+        /// <returns><c>true</c> if enabling the home application successfully, <c>false</c> otherwise.</returns>
+        public bool EnableHomeApp(bool homeAppEnabled)
+        {
+            var result = false;
+            try
+            {
+                result = OnEnableHomeApp(homeAppEnabled);
+            }
+            catch (Exception e)
+            {
+                Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Gets the scene application state.
         /// </summary>
         /// <returns>SceneApplicationState.</returns>
@@ -215,6 +234,12 @@ namespace Htc.Vita.XR
         /// </summary>
         /// <returns><c>true</c> if disconnecting the runtime successfully, <c>false</c> otherwise.</returns>
         protected abstract bool OnDisconnectRuntime();
+        /// <summary>
+        /// Called when enabling the home application.
+        /// </summary>
+        /// <param name="homeAppEnabled">if set to <c>true</c> the home application should be enabled.</param>
+        /// <returns><c>true</c> if enabling the home application successfully, <c>false</c> otherwise.</returns>
+        protected abstract bool OnEnableHomeApp(bool homeAppEnabled);
         /// <summary>
         /// Called when getting scene application state.
         /// </summary>

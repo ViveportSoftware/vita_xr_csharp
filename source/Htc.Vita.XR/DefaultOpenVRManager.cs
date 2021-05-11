@@ -164,6 +164,34 @@ namespace Htc.Vita.XR
         }
 
         /// <inheritdoc />
+        protected override bool OnEnableHomeApp(bool homeAppEnabled)
+        {
+            lock (_runtimeConnectingLock)
+            {
+                if (OnIsRuntimeConnected())
+                {
+                    var evrSettingsError = EVRSettingsError.None;
+                    OpenVR.Settings.SetBool(
+                            OpenVR.k_pch_SteamVR_Section,
+                            OpenVR.k_pch_SteamVR_EnableHomeApp,
+                            homeAppEnabled,
+                            ref evrSettingsError
+                    );
+                    if (evrSettingsError == EVRSettingsError.None)
+                    {
+                        return true;
+                    }
+
+                    Logger.GetInstance(typeof(DefaultOpenVRManager)).Error($"Can not enable home app: {evrSettingsError}");
+                    return false;
+                }
+
+                Logger.GetInstance(typeof(DefaultOpenVRManager)).Warn("Runtime is not connected when enabling home app.");
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
         protected override SceneApplicationState OnGetSceneApplicationState()
         {
             lock (_runtimeConnectingLock)
