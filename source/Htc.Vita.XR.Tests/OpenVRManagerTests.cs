@@ -1,3 +1,5 @@
+using System;
+using System.Threading;
 using Htc.Vita.Core.Log;
 using Xunit;
 
@@ -84,9 +86,21 @@ namespace Htc.Vita.XR.Tests
             var isHomeAppEnabled = openVRManager.IsHomeAppEnabled();
             if (isHomeAppEnabled)
             {
+                const string homeAppKey = "openvr.tool.steamvr_environments";
+                var homeAppProcessId = openVRManager.GetApplicationProcessId(homeAppKey);
+                Logger.GetInstance(typeof(OpenVRManagerTests)).Info($"{homeAppKey}({homeAppProcessId})");
+                Assert.False(homeAppProcessId == 0);
+
                 Assert.True(openVRManager.EnableHomeApp(false));
                 Assert.True(openVRManager.EnableHomeApp(false));
                 Assert.False(openVRManager.IsHomeAppEnabled());
+
+                SpinWait.SpinUntil(() => false, TimeSpan.FromSeconds(5));
+
+                var applicationError = openVRManager.LaunchApplication(homeAppKey);
+                Logger.GetInstance(typeof(OpenVRManagerTests)).Info($"Try to launch {homeAppKey}, error: {applicationError}");
+                Assert.True(applicationError == OpenVRManager.ApplicationError.None
+                        || applicationError == OpenVRManager.ApplicationError.ApplicationAlreadyRunning);
             }
             else
             {

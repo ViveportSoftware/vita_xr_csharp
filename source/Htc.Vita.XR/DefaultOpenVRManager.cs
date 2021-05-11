@@ -192,6 +192,20 @@ namespace Htc.Vita.XR
         }
 
         /// <inheritdoc />
+        protected override uint OnGetApplicationProcessId(string appKey)
+        {
+            lock (_runtimeConnectingLock)
+            {
+                if (OnIsRuntimeConnected())
+                {
+                    return OpenVR.Applications.GetApplicationProcessId(appKey);
+                }
+
+                return 0U;
+            }
+        }
+
+        /// <inheritdoc />
         protected override SceneApplicationState OnGetSceneApplicationState()
         {
             lock (_runtimeConnectingLock)
@@ -238,6 +252,21 @@ namespace Htc.Vita.XR
             lock (_runtimeConnectingLock)
             {
                 return _isRuntimeConnected;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override ApplicationError OnLaunchApplication(string appKey)
+        {
+            lock (_runtimeConnectingLock)
+            {
+                if (OnIsRuntimeConnected())
+                {
+                    return (ApplicationError) OpenVR.Applications.LaunchApplication(appKey);
+                }
+
+                Logger.GetInstance(typeof(DefaultOpenVRManager)).Warn($"Runtime is not connected when launching application {appKey}.");
+                return ApplicationError.IPCFailed;
             }
         }
     }

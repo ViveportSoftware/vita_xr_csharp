@@ -128,6 +128,30 @@ namespace Htc.Vita.XR
         }
 
         /// <summary>
+        /// Gets the application process identifier.
+        /// </summary>
+        /// <param name="appKey">The application key.</param>
+        /// <returns>System.UInt32.</returns>
+        public uint GetApplicationProcessId(string appKey)
+        {
+            if (string.IsNullOrWhiteSpace(appKey))
+            {
+                return 0U;
+            }
+
+            var result = 0U;
+            try
+            {
+                result = OnGetApplicationProcessId(appKey);
+            }
+            catch (Exception e)
+            {
+                Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Gets the scene application state.
         /// </summary>
         /// <returns>SceneApplicationState.</returns>
@@ -173,6 +197,30 @@ namespace Htc.Vita.XR
             try
             {
                 result = OnIsRuntimeConnected();
+            }
+            catch (Exception e)
+            {
+                Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Launches the application.
+        /// </summary>
+        /// <param name="appKey">The application key.</param>
+        /// <returns>ApplicationError.</returns>
+        public ApplicationError LaunchApplication(string appKey)
+        {
+            if (string.IsNullOrWhiteSpace(appKey))
+            {
+                return ApplicationError.InvalidApplication;
+            }
+
+            var result = ApplicationError.None;
+            try
+            {
+                result = OnLaunchApplication(appKey);
             }
             catch (Exception e)
             {
@@ -241,6 +289,12 @@ namespace Htc.Vita.XR
         /// <returns><c>true</c> if enabling the home application successfully, <c>false</c> otherwise.</returns>
         protected abstract bool OnEnableHomeApp(bool homeAppEnabled);
         /// <summary>
+        /// Called when getting application process identifier.
+        /// </summary>
+        /// <param name="appKey">The application key.</param>
+        /// <returns>System.UInt32.</returns>
+        protected abstract uint OnGetApplicationProcessId(string appKey);
+        /// <summary>
         /// Called when getting scene application state.
         /// </summary>
         /// <returns>SceneApplicationState.</returns>
@@ -255,5 +309,11 @@ namespace Htc.Vita.XR
         /// </summary>
         /// <returns><c>true</c> if the runtime is connected, <c>false</c> otherwise.</returns>
         protected abstract bool OnIsRuntimeConnected();
+        /// <summary>
+        /// Called when launching the application.
+        /// </summary>
+        /// <param name="appKey">The application key.</param>
+        /// <returns>ApplicationError.</returns>
+        protected abstract ApplicationError OnLaunchApplication(string appKey);
     }
 }
