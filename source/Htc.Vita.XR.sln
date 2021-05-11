@@ -8,6 +8,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Htc.Vita.XR.Tests.AnyCPU", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Htc.Vita.XR.Tests.x86", "Htc.Vita.XR.Tests\Htc.Vita.XR.Tests.x86.csproj", "{196A8C62-9B98-4FCD-B25C-9A9646F08CC2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Htc.Vita.XR.TestProgram.AnyCPU", "Htc.Vita.XR.TestProgram\Htc.Vita.XR.TestProgram.AnyCPU.csproj", "{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Htc.Vita.XR.TestProgram.x86", "Htc.Vita.XR.TestProgram\Htc.Vita.XR.TestProgram.x86.csproj", "{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AnyCPU = Debug|AnyCPU
@@ -40,6 +44,22 @@ Global
 		{196A8C62-9B98-4FCD-B25C-9A9646F08CC2}.Release|AnyCPU.Build.0 = Release|Any CPU
 		{196A8C62-9B98-4FCD-B25C-9A9646F08CC2}.Release|x86.ActiveCfg = Release|Any CPU
 		{196A8C62-9B98-4FCD-B25C-9A9646F08CC2}.Release|x86.Build.0 = Release|Any CPU
+		{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}.Debug|x86.Build.0 = Debug|Any CPU
+		{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}.Release|x86.ActiveCfg = Release|Any CPU
+		{7F7AE577-DEDB-4EA7-B8FC-E2F0D8C7899E}.Release|x86.Build.0 = Release|Any CPU
+		{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
+		{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}.Debug|AnyCPU.Build.0 = Debug|Any CPU
+		{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}.Release|AnyCPU.ActiveCfg = Release|Any CPU
+		{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{250EF0F9-B2BB-4CED-9E11-540B5754E0FB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

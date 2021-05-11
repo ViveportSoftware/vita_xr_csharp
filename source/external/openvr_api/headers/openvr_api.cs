@@ -1536,7 +1536,7 @@ public struct IVRSettings
 	[MarshalAs(UnmanagedType.FunctionPtr)]
 	internal _SetString SetString;
 
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+	[UnmanagedFunctionPointer(CallingConvention.StdCall)][return: MarshalAs(UnmanagedType.U1)]
 	internal delegate bool _GetBool(IntPtr pchSection, IntPtr pchSettingsKey, ref EVRSettingsError peError);
 	[MarshalAs(UnmanagedType.FunctionPtr)]
 	internal _GetBool GetBool;
