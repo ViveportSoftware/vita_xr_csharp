@@ -230,6 +230,24 @@ namespace Htc.Vita.XR
         }
 
         /// <summary>
+        /// Launches the runtime.
+        /// </summary>
+        /// <returns><c>true</c> if launching the runtime successfully, <c>false</c> otherwise.</returns>
+        public bool LaunchRuntime()
+        {
+            var result = false;
+            try
+            {
+                result = OnLaunchRuntime();
+            }
+            catch (Exception e)
+            {
+                Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Notifies the enable home application settings have changed.
         /// </summary>
         /// <param name="homeAppEnabled">if set to <c>true</c> [home application enabled].</param>
@@ -315,5 +333,10 @@ namespace Htc.Vita.XR
         /// <param name="appKey">The application key.</param>
         /// <returns>ApplicationError.</returns>
         protected abstract ApplicationError OnLaunchApplication(string appKey);
+        /// <summary>
+        /// Called when launching the runtime.
+        /// </summary>
+        /// <returns><c>true</c> if launching the runtime successfully, <c>false</c> otherwise.</returns>
+        protected abstract bool OnLaunchRuntime();
     }
 }

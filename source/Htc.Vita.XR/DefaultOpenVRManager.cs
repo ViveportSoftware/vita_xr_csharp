@@ -269,5 +269,11 @@ namespace Htc.Vita.XR
                 return ApplicationError.IPCFailed;
             }
         }
+
+        /// <inheritdoc />
+        protected override bool OnLaunchRuntime()
+        {
+            return Runtime.LaunchSteamVR();
+        }
     }
 }

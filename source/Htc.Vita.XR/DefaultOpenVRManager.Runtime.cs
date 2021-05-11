@@ -131,6 +131,11 @@ namespace Htc.Vita.XR
                 VersionCodeWithVersionName.Add("1615513459", "1.6.10");
             }
 
+            private static bool IsOn64BitSystem()
+            {
+                return Platform.DetectOsArch() == Platform.OsArch.Bit64;
+            }
+
             internal static bool IsSteamVRInstalled()
             {
                 var steamVRList = GetSteamVRList();
@@ -273,6 +278,141 @@ namespace Htc.Vita.XR
                     {
                         return true;
                     }
+                }
+
+                return false;
+            }
+
+            internal static bool LaunchSteamVR()
+            {
+                var steamVRList = GetSteamVRList();
+                if (steamVRList.Count <= 0)
+                {
+                    return false;
+                }
+
+                foreach (var steamVRInfo in steamVRList)
+                {
+                    var success = LaunchSteamVR(steamVRInfo);
+                    if (success)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            internal static bool LaunchSteamVR(SteamVRInfo steamVRInfo)
+            {
+                return LaunchSteamVRViaVRStartUp(steamVRInfo) || LaunchSteamVRViaVRMonitor(steamVRInfo);
+            }
+
+            internal static bool LaunchSteamVRViaVRMonitor(SteamVRInfo steamVRInfo)
+            {
+                return LaunchSteamVRViaVRMonitor64(steamVRInfo) || LaunchSteamVRViaVRMonitor32(steamVRInfo);
+            }
+
+            internal static bool LaunchSteamVRViaVRMonitor32(SteamVRInfo steamVRInfo)
+            {
+                var vrMonitor32Path = steamVRInfo?.VRMonitor32Path;
+                if (vrMonitor32Path == null || !vrMonitor32Path.Exists)
+                {
+                    return false;
+                }
+
+                var fullName = vrMonitor32Path.FullName;
+                try
+                {
+                    using (Process.Start(fullName))
+                    {
+                        // Skip
+                    }
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.GetInstance(typeof(DefaultOpenVRManager)).Error($"Can not launch SteamVR via vrmonitor: \"{fullName}\". error: {e.Message}");
+                }
+
+                return false;
+            }
+
+            internal static bool LaunchSteamVRViaVRMonitor64(SteamVRInfo steamVRInfo)
+            {
+                var vrMonitor64Path = steamVRInfo?.VRMonitor64Path;
+                if (!IsOn64BitSystem() || vrMonitor64Path == null || !vrMonitor64Path.Exists)
+                {
+                    return false;
+                }
+
+                var fullName = vrMonitor64Path.FullName;
+                try
+                {
+                    using (Process.Start(fullName))
+                    {
+                        // Skip
+                    }
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.GetInstance(typeof(DefaultOpenVRManager)).Error($"Can not launch SteamVR via vrmonitor: \"{fullName}\". error: {e.Message}");
+                }
+
+                return false;
+            }
+
+            internal static bool LaunchSteamVRViaVRStartUp(SteamVRInfo steamVRInfo)
+            {
+                return LaunchSteamVRViaVRStartUp64(steamVRInfo) || LaunchSteamVRViaVRStartUp32(steamVRInfo);
+            }
+
+            internal static bool LaunchSteamVRViaVRStartUp32(SteamVRInfo steamVRInfo)
+            {
+                var vrStartUp32Path = steamVRInfo?.VRStartUp32Path;
+                if (vrStartUp32Path == null || !vrStartUp32Path.Exists)
+                {
+                    return false;
+                }
+
+                var fullName = vrStartUp32Path.FullName;
+                try
+                {
+                    using (Process.Start(fullName))
+                    {
+                        // Skip
+                    }
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.GetInstance(typeof(DefaultOpenVRManager)).Error($"Can not launch SteamVR via vrstartup: \"{fullName}\". error: {e.Message}");
+                }
+
+                return false;
+            }
+
+            internal static bool LaunchSteamVRViaVRStartUp64(SteamVRInfo steamVRInfo)
+            {
+                var vrStartUp64Path = steamVRInfo?.VRStartUp64Path;
+                if (!IsOn64BitSystem() || vrStartUp64Path == null || !vrStartUp64Path.Exists)
+                {
+                    return false;
+                }
+
+                var fullName = vrStartUp64Path.FullName;
+                try
+                {
+                    using (Process.Start(fullName))
+                    {
+                        // Skip
+                    }
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.GetInstance(typeof(DefaultOpenVRManager)).Error($"Can not launch SteamVR via vrstartup: \"{fullName}\". error: {e.Message}");
                 }
 
                 return false;

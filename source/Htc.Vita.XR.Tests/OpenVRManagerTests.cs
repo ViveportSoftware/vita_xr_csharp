@@ -7,6 +7,9 @@ namespace Htc.Vita.XR.Tests
 {
     public static class OpenVRManagerTests
     {
+        private const int HomeAppKillingTimeInSec = 5;
+        private const int RuntimeLaunchingTimeInSec = 10;
+
         [Fact]
         public static void Default_0_GetInstance()
         {
@@ -37,8 +40,15 @@ namespace Htc.Vita.XR.Tests
             }
             if (!checkResult.IsRuntimeRunning)
             {
-                Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime is not running. Skip");
-                return;
+                Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime is not running. Try to launch runtime");
+                var success = openVRManager.LaunchRuntime();
+                if (!success)
+                {
+                    Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime is not running. Skip");
+                    return;
+                }
+
+                SpinWait.SpinUntil(() => false, TimeSpan.FromSeconds(RuntimeLaunchingTimeInSec));
             }
 
             openVRManager.OnEnableHomeAppSettingsHaveChanged += OpenVRManager_OnEnableHomeAppSettingsHaveChanged;
@@ -71,8 +81,15 @@ namespace Htc.Vita.XR.Tests
             }
             if (!checkResult.IsRuntimeRunning)
             {
-                Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime is not running. Skip");
-                return;
+                Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime is not running. Try to launch runtime");
+                var success = openVRManager.LaunchRuntime();
+                if (!success)
+                {
+                    Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime is not running. Skip");
+                    return;
+                }
+
+                SpinWait.SpinUntil(() => false, TimeSpan.FromSeconds(RuntimeLaunchingTimeInSec));
             }
 
             openVRManager.OnEnableHomeAppSettingsHaveChanged += OpenVRManager_OnEnableHomeAppSettingsHaveChanged;
@@ -95,7 +112,7 @@ namespace Htc.Vita.XR.Tests
                 Assert.True(openVRManager.EnableHomeApp(false));
                 Assert.False(openVRManager.IsHomeAppEnabled());
 
-                SpinWait.SpinUntil(() => false, TimeSpan.FromSeconds(5));
+                SpinWait.SpinUntil(() => false, TimeSpan.FromSeconds(HomeAppKillingTimeInSec));
 
                 var applicationError = openVRManager.LaunchApplication(homeAppKey);
                 Logger.GetInstance(typeof(OpenVRManagerTests)).Info($"Try to launch {homeAppKey}, error: {applicationError}");
