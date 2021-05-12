@@ -1,5 +1,7 @@
 # HTC Vita XR Libraries for .NET platform (Htc.Vita.XR)
 
+[![Build status](https://ci.appveyor.com/api/projects/status/xt8j4cq9ih2mr1ys/branch/master?svg=true)](https://ci.appveyor.com/project/kenelin/vita-xr-csharp/branch/master)
+
 ## Dependency
 
 Compile-time dependencies:
