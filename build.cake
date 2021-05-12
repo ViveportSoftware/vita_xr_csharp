@@ -77,6 +77,7 @@ var sonarcloudProjectKey = EnvironmentVariable("SONARCLOUD_PROJECTKEY") ?? "NOTS
 var sonarcloudProjectOrg = EnvironmentVariable("SONARCLOUD_PROJECTORG") ?? "NOTSET";
 var sonarcloudUrl = "https://sonarcloud.io";
 
+
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
