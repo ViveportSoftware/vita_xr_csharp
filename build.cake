@@ -142,7 +142,7 @@ Task("Run-Sonar-Begin")
     SonarBegin(
             new SonarBeginSettings
             {
-                    Key = "ViveportSoftware_vita_shell_csharp",
+                    Key = "ViveportSoftware_vita_xr_csharp",
                     Login = sonarcloudApiKey,
                     OpenCoverReportsPath = "**/*.OpenCover.xml",
                     Organization = "viveportsoftware",
@@ -364,7 +364,6 @@ Task("Sign-Assemblies")
     var targetPlatforms = new[]
     {
             "net45",
-            "net5.0",
             "netstandard2.0"
     };
     foreach (var targetPlatform in targetPlatforms)

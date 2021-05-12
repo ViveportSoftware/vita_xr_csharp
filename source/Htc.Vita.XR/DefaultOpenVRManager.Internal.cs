@@ -100,8 +100,8 @@ namespace Htc.Vita.XR
 
             private static void InitKnownVersion()
             {
-                Sha1ChecksumWithVersion.Add("7fd3a13b0abec02f84564bef0fb0e89c142ed9c9", "SDK 1.16.8 / Runtime 1.16.8 (win32)");
-                Sha1ChecksumWithVersion.Add("c6b6213d1fcd033a3b8b29b247e18f371db556a5", "SDK 1.16.8 / Runtime 1.16.8 (win64)");
+                Sha1ChecksumWithVersion.Add("7fd3a13b0abec02f84564bef0fb0e89c142ed9c9", "SDK 1.16.8 / Runtime 1.16.8 (win32_x86)");
+                Sha1ChecksumWithVersion.Add("c6b6213d1fcd033a3b8b29b247e18f371db556a5", "SDK 1.16.8 / Runtime 1.16.8 (win32_amd64)");
             }
 
             private static string PrepareBinary(string resourceName, string platformName, string binaryName)
