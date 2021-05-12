@@ -196,7 +196,6 @@ Task("Run-Unit-Tests-Under-AnyCPU-1")
                 {
                         ReportType = DotCoverReportType.HTML
                 }.WithFilter("+:*")
-                .WithFilter("-:Htc.Vita.Mod.*")
                 .WithFilter("-:xunit.*")
                 .WithFilter("-:*.NunitTest")
                 .WithFilter("-:*.Tests")
@@ -264,7 +263,6 @@ Task("Run-Unit-Tests-Under-X86")
                 {
                         ReportType = DotCoverReportType.HTML
                 }.WithFilter("+:*")
-                .WithFilter("-:Htc.Vita.Mod.*")
                 .WithFilter("-:xunit.*")
                 .WithFilter("-:*.NunitTest")
                 .WithFilter("-:*.Tests")
