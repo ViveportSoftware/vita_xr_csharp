@@ -18,6 +18,8 @@ namespace Htc.Vita.XR
 
         private volatile bool _isRuntimeConnected;
 
+        private EVRInitError _lastEVRInitError;
+
         static DefaultOpenVRManager()
         {
 #if NATIVE_LIBRARY_EMBEDDED
@@ -76,7 +78,8 @@ namespace Htc.Vita.XR
                 OpenVR.Init(ref evrInitError, EVRApplicationType.VRApplication_Utility);
                 if (evrInitError != EVRInitError.None)
                 {
-                    Logger.GetInstance(typeof(DefaultOpenVRManager)).Error($"Can not connect runtime: {evrInitError}");
+                    _isRuntimeConnected = false;
+                    _lastEVRInitError = evrInitError;
                 }
                 else
                 {
@@ -203,6 +206,12 @@ namespace Htc.Vita.XR
 
                 return 0U;
             }
+        }
+
+        /// <inheritdoc />
+        protected override InitError OnGetLastRuntimeConnectingError()
+        {
+            return (InitError) _lastEVRInitError;
         }
 
         /// <inheritdoc />

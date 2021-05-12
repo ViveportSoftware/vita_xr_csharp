@@ -44,7 +44,7 @@ namespace Htc.Vita.XR.Tests
                 var success = openVRManager.LaunchRuntime();
                 if (!success)
                 {
-                    Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime is not running. Skip");
+                    Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime can not be launched. Skip");
                     return;
                 }
 
@@ -61,7 +61,12 @@ namespace Htc.Vita.XR.Tests
             }
 
             Assert.False(openVRManager.IsRuntimeConnected());
-            Assert.True(openVRManager.ConnectRuntime());
+            var connected = openVRManager.ConnectRuntime();
+            if (!connected)
+            {
+                Logger.GetInstance(typeof(OpenVRManagerTests)).Error($"Con not connect to OpenVR runtime. error: {openVRManager.GetLastRuntimeConnectingError()}");
+                return;
+            }
             Assert.True(openVRManager.ConnectRuntime());
             Assert.True(openVRManager.IsRuntimeConnected());
             Assert.True(openVRManager.DisconnectRuntime());
@@ -85,7 +90,7 @@ namespace Htc.Vita.XR.Tests
                 var success = openVRManager.LaunchRuntime();
                 if (!success)
                 {
-                    Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime is not running. Skip");
+                    Logger.GetInstance(typeof(OpenVRManagerTests)).Warn("OpenVR runtime can not be launched. Skip");
                     return;
                 }
 
@@ -97,7 +102,12 @@ namespace Htc.Vita.XR.Tests
             var isRuntimeConnected = openVRManager.IsRuntimeConnected();
             if (!isRuntimeConnected)
             {
-                Assert.True(openVRManager.ConnectRuntime());
+                var connected = openVRManager.ConnectRuntime();
+                if (!connected)
+                {
+                    Logger.GetInstance(typeof(OpenVRManagerTests)).Error($"Con not connect to OpenVR runtime. error: {openVRManager.GetLastRuntimeConnectingError()}");
+                    return;
+                }
             }
 
             var isHomeAppEnabled = openVRManager.IsHomeAppEnabled();

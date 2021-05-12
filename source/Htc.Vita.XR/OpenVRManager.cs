@@ -152,6 +152,24 @@ namespace Htc.Vita.XR
         }
 
         /// <summary>
+        /// Gets the last runtime connecting error.
+        /// </summary>
+        /// <returns>InitError.</returns>
+        public InitError GetLastRuntimeConnectingError()
+        {
+            var result = InitError.Unknown;
+            try
+            {
+                result = OnGetLastRuntimeConnectingError();
+            }
+            catch (Exception e)
+            {
+                Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Gets the scene application state.
         /// </summary>
         /// <returns>SceneApplicationState.</returns>
@@ -312,6 +330,11 @@ namespace Htc.Vita.XR
         /// <param name="appKey">The application key.</param>
         /// <returns>System.UInt32.</returns>
         protected abstract uint OnGetApplicationProcessId(string appKey);
+        /// <summary>
+        /// Called when getting last runtime connecting error.
+        /// </summary>
+        /// <returns>InitError.</returns>
+        protected abstract InitError OnGetLastRuntimeConnectingError();
         /// <summary>
         /// Called when getting scene application state.
         /// </summary>

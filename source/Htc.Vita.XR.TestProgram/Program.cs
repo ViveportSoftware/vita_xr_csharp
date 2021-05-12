@@ -28,8 +28,13 @@ namespace Htc.Vita.XR.TestProgram
             }
             if (!isRuntimeRunning)
             {
-                Logger.GetInstance(typeof(Program)).Error("OpenVR runtime is not running.");
-                return;
+                Logger.GetInstance(typeof(Program)).Error("OpenVR runtime is not running. Try to launch runtime");
+                var success = openVRManager.LaunchRuntime();
+                if (!success)
+                {
+                    Logger.GetInstance(typeof(Program)).Warn("OpenVR runtime can not be launched. Skip");
+                    return;
+                }
             }
             Console.ReadKey();
 
@@ -42,7 +47,7 @@ namespace Htc.Vita.XR.TestProgram
                 var connected = openVRManager.ConnectRuntime();
                 if (!connected)
                 {
-                    Logger.GetInstance(typeof(Program)).Error("Con not connect to OpenVR runtime.");
+                    Logger.GetInstance(typeof(Program)).Error($"Con not connect to OpenVR runtime. error: {openVRManager.GetLastRuntimeConnectingError()}");
                     return;
                 }
             }
