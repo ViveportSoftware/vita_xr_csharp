@@ -317,6 +317,7 @@ namespace Htc.Vita.XR
         /// <inheritdoc />
         protected override bool OnStartRuntimeWatching()
         {
+            _isRuntimeRunning = Runtime.IsSteamVRRunning();
             _runtimeWatcher.ProcessCreated -= OnRuntimeProcessCreated;
             _runtimeWatcher.ProcessDeleted -= OnRuntimeProcessDeleted;
             _runtimeWatcher.ProcessCreated += OnRuntimeProcessCreated;
