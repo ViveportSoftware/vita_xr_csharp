@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Htc.Vita.Core.Log;
+using Htc.Vita.Core.Runtime;
 using Htc.Vita.Mod.Valve.VR;
 
 namespace Htc.Vita.XR
@@ -18,7 +19,9 @@ namespace Htc.Vita.XR
 
         private volatile bool _isRuntimeConnected;
 
+        private bool _isRuntimeRunning;
         private EVRInitError _lastEVRInitError;
+        private ProcessWatcher _runtimeWatcher;
 
         static DefaultOpenVRManager()
         {
@@ -28,6 +31,14 @@ namespace Htc.Vita.XR
             var is64 = IntPtr.Size == 8;
             Core.Runtime.Platform.LoadNativeLib(is64 ? $"x64/{Library.OpenVRApi}.dll" : $"x86/{Library.OpenVRApi}.dll");
 #endif
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultOpenVRManager"/> class.
+        /// </summary>
+        public DefaultOpenVRManager()
+        {
+            _runtimeWatcher = ProcessWatcherFactory.GetInstance().CreateProcessWatcher(Runtime.VRMonitorFileName);
         }
 
         /// <inheritdoc />
@@ -151,7 +162,13 @@ namespace Htc.Vita.XR
                     }
             });
 
-            return OnIsRuntimeConnected();
+            var isRuntimeConnected = OnIsRuntimeConnected();
+            if (isRuntimeConnected)
+            {
+                NotifyRuntimeConnected();
+            }
+
+            return isRuntimeConnected;
         }
 
         /// <inheritdoc />
@@ -163,7 +180,13 @@ namespace Htc.Vita.XR
                 _isRuntimeConnected = false;
             }
 
-            return !OnIsRuntimeConnected();
+            var isRuntimeDisconnected = !OnIsRuntimeConnected();
+            if (isRuntimeDisconnected)
+            {
+                NotifyRuntimeDisconnected();
+            }
+
+            return isRuntimeDisconnected;
         }
 
         /// <inheritdoc />
@@ -265,6 +288,12 @@ namespace Htc.Vita.XR
         }
 
         /// <inheritdoc />
+        protected override bool OnKillRuntime()
+        {
+            return Runtime.KillSteamVR();
+        }
+
+        /// <inheritdoc />
         protected override ApplicationError OnLaunchApplication(string appKey)
         {
             lock (_runtimeConnectingLock)
@@ -283,6 +312,56 @@ namespace Htc.Vita.XR
         protected override bool OnLaunchRuntime()
         {
             return Runtime.LaunchSteamVR();
+        }
+
+        /// <inheritdoc />
+        protected override bool OnStartRuntimeWatching()
+        {
+            _runtimeWatcher.ProcessCreated -= OnRuntimeProcessCreated;
+            _runtimeWatcher.ProcessDeleted -= OnRuntimeProcessDeleted;
+            _runtimeWatcher.ProcessCreated += OnRuntimeProcessCreated;
+            _runtimeWatcher.ProcessDeleted += OnRuntimeProcessDeleted;
+            return _runtimeWatcher.Start();
+        }
+
+        /// <inheritdoc />
+        protected override bool OnStopRuntimeWatching()
+        {
+            _runtimeWatcher.ProcessCreated -= OnRuntimeProcessCreated;
+            _runtimeWatcher.ProcessDeleted -= OnRuntimeProcessDeleted;
+            return _runtimeWatcher.Stop();
+        }
+
+        private void OnRuntimeProcessCreated(ProcessWatcher.ProcessInfo processInfo)
+        {
+            if (!Runtime.IsSteamVRRunning())
+            {
+                return;
+            }
+
+            if (_isRuntimeRunning)
+            {
+                return;
+            }
+
+            _isRuntimeRunning = true;
+            NotifyRuntimeLaunched();
+        }
+
+        private void OnRuntimeProcessDeleted(ProcessWatcher.ProcessInfo processInfo)
+        {
+            if (Runtime.IsSteamVRRunning())
+            {
+                return;
+            }
+
+            if (!_isRuntimeRunning)
+            {
+                return;
+            }
+
+            _isRuntimeRunning = false;
+            NotifyRuntimeKilled();
         }
     }
 }
