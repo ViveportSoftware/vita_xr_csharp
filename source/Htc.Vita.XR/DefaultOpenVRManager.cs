@@ -16,12 +16,12 @@ namespace Htc.Vita.XR
     public partial class DefaultOpenVRManager : OpenVRManager
     {
         private readonly object _runtimeConnectingLock = new object();
+        private readonly ProcessWatcher _runtimeWatcher;
 
         private volatile bool _isRuntimeConnected;
 
         private bool _isRuntimeRunning;
         private EVRInitError _lastEVRInitError;
-        private ProcessWatcher _runtimeWatcher;
 
         static DefaultOpenVRManager()
         {
