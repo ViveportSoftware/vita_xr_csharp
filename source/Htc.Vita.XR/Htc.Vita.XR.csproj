@@ -28,11 +28,11 @@
   <ItemGroup>
     <Content Include="..\external\openvr_api\bin\win64\openvr_api.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>x64\openvr_api.dll</Link>
+      <Link>amd64\openvr_api.dll</Link>
       <Pack>false</Pack>
     </Content>
     <EmbeddedResource Include="..\external\openvr_api\bin\win64\openvr_api.dll.gz">
-      <Link>x64\openvr_api.dll.gz</Link>
+      <Link>amd64\openvr_api.dll.gz</Link>
     </EmbeddedResource>
     <Content Include="..\external\openvr_api\bin\win32\openvr_api.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

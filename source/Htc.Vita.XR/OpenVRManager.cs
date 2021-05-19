@@ -15,6 +15,22 @@ namespace Htc.Vita.XR
         /// </summary>
         public event Action<bool> OnEnableHomeAppSettingsHaveChanged;
         /// <summary>
+        /// Occurs when the runtime is connected.
+        /// </summary>
+        public event Action OnRuntimeConnected;
+        /// <summary>
+        /// Occurs when the runtime is disconnected.
+        /// </summary>
+        public event Action OnRuntimeDisconnected;
+        /// <summary>
+        /// Occurs when the runtime is killed.
+        /// </summary>
+        public event Action OnRuntimeKilled;
+        /// <summary>
+        /// Occurs when the runtime is launched.
+        /// </summary>
+        public event Action OnRuntimeLaunched;
+        /// <summary>
         /// Occurs when scene application state changed.
         /// </summary>
         public event Action<SceneApplicationState> OnSceneApplicationStateChanged;
@@ -224,6 +240,24 @@ namespace Htc.Vita.XR
         }
 
         /// <summary>
+        /// Kills the runtime.
+        /// </summary>
+        /// <returns><c>true</c> if killing the runtime successfully, <c>false</c> otherwise.</returns>
+        public bool KillRuntime()
+        {
+            var result = false;
+            try
+            {
+                result = OnKillRuntime();
+            }
+            catch (Exception e)
+            {
+                Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Launches the application.
         /// </summary>
         /// <param name="appKey">The application key.</param>
@@ -266,9 +300,81 @@ namespace Htc.Vita.XR
         }
 
         /// <summary>
+        /// Notifies the runtime is connected.
+        /// </summary>
+        protected void NotifyRuntimeConnected()
+        {
+            Task.Run(() =>
+            {
+                    try
+                    {
+                        OnRuntimeConnected?.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+                    }
+            });
+        }
+
+        /// <summary>
+        /// Notifies the runtime is disconnected.
+        /// </summary>
+        protected void NotifyRuntimeDisconnected()
+        {
+            Task.Run(() =>
+            {
+                    try
+                    {
+                        OnRuntimeDisconnected?.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+                    }
+            });
+        }
+
+        /// <summary>
+        /// Notifies the runtime is killed.
+        /// </summary>
+        protected void NotifyRuntimeKilled()
+        {
+            Task.Run(() =>
+            {
+                    try
+                    {
+                        OnRuntimeKilled?.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+                    }
+            });
+        }
+
+        /// <summary>
+        /// Notifies the runtime is launched.
+        /// </summary>
+        protected void NotifyRuntimeLaunched()
+        {
+            Task.Run(() =>
+            {
+                    try
+                    {
+                        OnRuntimeLaunched?.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+                    }
+            });
+        }
+
+        /// <summary>
         /// Notifies the enable home application settings have changed.
         /// </summary>
-        /// <param name="homeAppEnabled">if set to <c>true</c> [home application enabled].</param>
+        /// <param name="homeAppEnabled">The home application enabled or not.</param>
         protected void NotifyEnableHomeAppSettingsHaveChanged(bool homeAppEnabled)
         {
             Task.Run(() =>
@@ -287,7 +393,7 @@ namespace Htc.Vita.XR
         /// <summary>
         /// Notifies the scene application state changed.
         /// </summary>
-        /// <param name="sceneApplicationState">State of the scene application.</param>
+        /// <param name="sceneApplicationState">The scene application state.</param>
         protected void NotifySceneApplicationStateChanged(SceneApplicationState sceneApplicationState)
         {
             Task.Run(() =>
@@ -301,6 +407,42 @@ namespace Htc.Vita.XR
                         Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
                     }
             });
+        }
+
+        /// <summary>
+        /// Starts runtime watching.
+        /// </summary>
+        /// <returns><c>true</c> if starting runtime watching successfully, <c>false</c> otherwise.</returns>
+        public bool StartRuntimeWatching()
+        {
+            var result = false;
+            try
+            {
+                result = OnStartRuntimeWatching();
+            }
+            catch (Exception e)
+            {
+                Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Stops runtime watching.
+        /// </summary>
+        /// <returns><c>true</c> if stopping runtime watching successfully, <c>false</c> otherwise.</returns>
+        public bool StopRuntimeWatching()
+        {
+            var result = false;
+            try
+            {
+                result = OnStopRuntimeWatching();
+            }
+            catch (Exception e)
+            {
+                Logger.GetInstance(typeof(OpenVRManager)).Error(e.ToString());
+            }
+            return result;
         }
 
         /// <summary>
@@ -351,6 +493,11 @@ namespace Htc.Vita.XR
         /// <returns><c>true</c> if the runtime is connected, <c>false</c> otherwise.</returns>
         protected abstract bool OnIsRuntimeConnected();
         /// <summary>
+        /// Called when killing the runtime.
+        /// </summary>
+        /// <returns><c>true</c> if killing the runtime successfully, <c>false</c> otherwise.</returns>
+        protected abstract bool OnKillRuntime();
+        /// <summary>
         /// Called when launching the application.
         /// </summary>
         /// <param name="appKey">The application key.</param>
@@ -361,5 +508,15 @@ namespace Htc.Vita.XR
         /// </summary>
         /// <returns><c>true</c> if launching the runtime successfully, <c>false</c> otherwise.</returns>
         protected abstract bool OnLaunchRuntime();
+        /// <summary>
+        /// Called when starting runtime watching.
+        /// </summary>
+        /// <returns><c>true</c> if starting runtime watching successfully, <c>false</c> otherwise.</returns>
+        protected abstract bool OnStartRuntimeWatching();
+        /// <summary>
+        /// Called when stopping runtime watching.
+        /// </summary>
+        /// <returns><c>true</c> if stopping runtime watching successfully, <c>false</c> otherwise.</returns>
+        protected abstract bool OnStopRuntimeWatching();
     }
 }

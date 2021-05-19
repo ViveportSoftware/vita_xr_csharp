@@ -164,10 +164,10 @@ namespace Htc.Vita.XR
                 {
                     return Platform.LoadNativeLib(
                             PrepareBinary(
-                                    $"{prefix}.x64.{Library.OpenVRApi}.dll.gz",
-                                    "x64",
+                                    $"{prefix}.amd64.{Library.OpenVRApi}.dll.gz",
+                                    "amd64",
                                     $"{Library.OpenVRApi}.dll"
-                            ) ?? $"x64/{Library.OpenVRApi}.dll"
+                            ) ?? $"amd64/{Library.OpenVRApi}.dll"
                     );
                 }
                 return Platform.LoadNativeLib(

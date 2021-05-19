@@ -8,6 +8,14 @@ namespace Htc.Vita.XR.TestProgram
         private static void Main(string[] args)
         {
             var openVRManager = OpenVRManager.GetInstance();
+            openVRManager.OnRuntimeConnected += OpenVRManager_OnRuntimeConnected;
+            openVRManager.OnRuntimeDisconnected += OpenVRManager_OnRuntimeDisconnected;
+            openVRManager.OnRuntimeKilled += OpenVRManager_OnRuntimeKilled;
+            openVRManager.OnRuntimeLaunched += OpenVRManager_OnRuntimeLaunched;
+            Logger.GetInstance(typeof(Program)).Info("Start OpenVR runtime watching");
+            openVRManager.StartRuntimeWatching();
+            Console.ReadKey();
+
             var checkResult = openVRManager.Check();
             var isApiReady = checkResult.IsApiReady;
             var isRuntimeInstalled = checkResult.IsRuntimeInstalled;
@@ -84,7 +92,38 @@ namespace Htc.Vita.XR.TestProgram
             Logger.GetInstance(typeof(Program)).Info("OpenVR runtime is reconnected.");
             Console.ReadKey();
 
+            var killed = openVRManager.KillRuntime();
+            if (!killed)
+            {
+                Logger.GetInstance(typeof(Program)).Error("Can not kill OpenVR runtime");
+            }
+            Console.ReadKey();
+
+            Logger.GetInstance(typeof(Program)).Info("Stop OpenVR runtime watching");
+            openVRManager.StopRuntimeWatching();
+            Console.ReadKey();
+
             Logger.GetInstance(typeof(Program)).Info("Done");
+        }
+
+        private static void OpenVRManager_OnRuntimeConnected()
+        {
+            Logger.GetInstance(typeof(Program)).Info("OpenVR Runtime is connected");
+        }
+
+        private static void OpenVRManager_OnRuntimeDisconnected()
+        {
+            Logger.GetInstance(typeof(Program)).Info("OpenVR Runtime is disconnected");
+        }
+
+        private static void OpenVRManager_OnRuntimeKilled()
+        {
+            Logger.GetInstance(typeof(Program)).Info("OpenVR Runtime is killed");
+        }
+
+        private static void OpenVRManager_OnRuntimeLaunched()
+        {
+            Logger.GetInstance(typeof(Program)).Info("OpenVR Runtime is launched");
         }
 
         private static void OpenVRManager_OnSceneApplicationStateChanged(OpenVRManager.SceneApplicationState sceneApplicationState)

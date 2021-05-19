@@ -13,6 +13,11 @@ namespace Htc.Vita.XR
     {
         internal static class Runtime
         {
+            internal const string VRMonitorFileName = "vrmonitor.exe";
+            internal const string VRPathRegFileName = "vrpathreg.exe";
+            internal const string VRServerFileName = "vrserver.exe";
+            internal const string VRStartUpFileName = "vrstartup.exe";
+
             private static readonly Dictionary<string, string> VersionCodeWithVersionName = new Dictionary<string, string>();
 
             static Runtime()
@@ -94,14 +99,14 @@ namespace Htc.Vita.XR
                             {
                                     InstallPath = runtimePath,
                                     InstallVersion = ParseSteamVRVersion(GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "version.txt"))),
-                                    VRMonitor32Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win32", "vrmonitor.exe")),
-                                    VRMonitor64Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win64", "vrmonitor.exe")),
-                                    VRPathReg32Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win32", "vrpathreg.exe")),
-                                    VRPathReg64Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win64", "vrpathreg.exe")),
-                                    VRServer32Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win32", "vrserver.exe")),
-                                    VRServer64Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win64", "vrserver.exe")),
-                                    VRStartUp32Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win32", "vrstartup.exe")),
-                                    VRStartUp64Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win64", "vrstartup.exe"))
+                                    VRMonitor32Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win32", VRMonitorFileName)),
+                                    VRMonitor64Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win64", VRMonitorFileName)),
+                                    VRPathReg32Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win32", VRPathRegFileName)),
+                                    VRPathReg64Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win64", VRPathRegFileName)),
+                                    VRServer32Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win32", VRServerFileName)),
+                                    VRServer64Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win64", VRServerFileName)),
+                                    VRStartUp32Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win32", VRStartUpFileName)),
+                                    VRStartUp64Path = GetSteamVRComponentPath(runtimePath, Path.Combine("bin", "win64", VRStartUpFileName))
                             };
 
                             if (steamVrInfo.VRMonitor32Path == null && steamVrInfo.VRMonitor64Path == null)
@@ -128,7 +133,7 @@ namespace Htc.Vita.XR
 
             private static void InitKnownVersion()
             {
-                VersionCodeWithVersionName.Add("1615513459", "1.6.10");
+                VersionCodeWithVersionName.Add("1615513459", "1.16.10");
             }
 
             private static bool IsOn64BitSystem()
@@ -162,22 +167,17 @@ namespace Htc.Vita.XR
                     return false;
                 }
 
-                var targetProcessName = steamVRInfo.VRMonitor32Path?.Name;
+                var targetProcessName = steamVRInfo.VRMonitor32Path?.FullName;
                 if (string.IsNullOrWhiteSpace(targetProcessName))
                 {
-                    targetProcessName = steamVRInfo.VRMonitor64Path?.Name;
+                    targetProcessName = steamVRInfo.VRMonitor64Path?.FullName;
                 }
                 if (string.IsNullOrWhiteSpace(targetProcessName))
                 {
                     return false;
                 }
 
-                const string suffix = ".exe";
-                if (targetProcessName.EndsWith(suffix))
-                {
-                    targetProcessName = targetProcessName.Substring(0, targetProcessName.Length - suffix.Length);
-                }
-
+                targetProcessName = Path.GetFileNameWithoutExtension(targetProcessName);
                 var processList = Process.GetProcessesByName(targetProcessName);
                 if (processList.Length <= 0)
                 {
@@ -226,22 +226,17 @@ namespace Htc.Vita.XR
                     return false;
                 }
 
-                var targetProcessName = steamVRInfo.VRServer32Path?.Name;
+                var targetProcessName = steamVRInfo.VRServer32Path?.FullName;
                 if (string.IsNullOrWhiteSpace(targetProcessName))
                 {
-                    targetProcessName = steamVRInfo.VRServer64Path?.Name;
+                    targetProcessName = steamVRInfo.VRServer64Path?.FullName;
                 }
                 if (string.IsNullOrWhiteSpace(targetProcessName))
                 {
                     return false;
                 }
 
-                const string suffix = ".exe";
-                if (targetProcessName.EndsWith(suffix))
-                {
-                    targetProcessName = targetProcessName.Substring(0, targetProcessName.Length - suffix.Length);
-                }
-
+                targetProcessName = Path.GetFileNameWithoutExtension(targetProcessName);
                 var processList = Process.GetProcessesByName(targetProcessName);
                 if (processList.Length <= 0)
                 {
@@ -281,6 +276,99 @@ namespace Htc.Vita.XR
                 }
 
                 return false;
+            }
+
+            internal static bool KillProcessesByFullPath(string processFullPath)
+            {
+                if (string.IsNullOrWhiteSpace(processFullPath))
+                {
+                    return true;
+                }
+
+                var processName = Path.GetFileNameWithoutExtension(processFullPath);
+                var processes = Process.GetProcessesByName(processName);
+
+                try
+                {
+                    foreach (var process in processes)
+                    {
+                        var processPath = ProcessManager.GetProcessPathById(process.Id);
+                        if (string.IsNullOrWhiteSpace(processPath))
+                        {
+                            continue;
+                        }
+                        if (!processPath.Equals(processFullPath))
+                        {
+                            continue;
+                        }
+
+                        var success = process.CloseMainWindow();
+                        if (!success)
+                        {
+                            process.Kill();
+                        }
+                    }
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.GetInstance(typeof(Runtime)).Error($"Can not kill processes by \"{processFullPath}\": {e.Message}");
+                }
+
+                return false;
+            }
+
+            internal static bool KillSteamVR()
+            {
+                var steamVRList = GetSteamVRList();
+                if (steamVRList.Count <= 0)
+                {
+                    return false;
+                }
+
+                foreach (var steamVRInfo in steamVRList)
+                {
+                    var success = KillSteamVR(steamVRInfo);
+                    if (!success)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            internal static bool KillSteamVR(SteamVRInfo steamVRInfo)
+            {
+                return KillSteamVRViaVRMonitor(steamVRInfo);
+            }
+
+            internal static bool KillSteamVRViaVRMonitor(SteamVRInfo steamVRInfo)
+            {
+                return KillSteamVRViaVRMonitor32(steamVRInfo) && KillSteamVRViaVRMonitor64(steamVRInfo);
+            }
+
+            internal static bool KillSteamVRViaVRMonitor32(SteamVRInfo steamVRInfo)
+            {
+                var vrMonitor32Path = steamVRInfo?.VRMonitor32Path;
+                if (vrMonitor32Path == null || !vrMonitor32Path.Exists)
+                {
+                    return true;
+                }
+
+                return KillProcessesByFullPath(vrMonitor32Path.FullName);
+            }
+
+            internal static bool KillSteamVRViaVRMonitor64(SteamVRInfo steamVRInfo)
+            {
+                var vrMonitor64Path = steamVRInfo?.VRMonitor64Path;
+                if (vrMonitor64Path == null || !vrMonitor64Path.Exists)
+                {
+                    return true;
+                }
+
+                return KillProcessesByFullPath(vrMonitor64Path.FullName);
             }
 
             internal static bool LaunchSteamVR()
