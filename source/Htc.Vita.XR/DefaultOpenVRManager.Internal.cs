@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -36,6 +37,35 @@ namespace Htc.Vita.XR
                 });
             }
 
+            private static bool CheckPathWritable(string path)
+            {
+                if (!Directory.Exists(path))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.GetInstance(typeof(DefaultOpenVRManager)).Error($"Can not create \"{path}\", {e.Message}");
+                        return false;
+                    }
+                }
+
+                var now = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+                var testFilePath = Path.Combine(path, $"{Sha1.GetInstance().GenerateInHex(now)}.tmp");
+                try
+                {
+                    File.WriteAllText(testFilePath, now);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.GetInstance(typeof(DefaultOpenVRManager)).Error($"Can not write file to \"{path}\", {e.Message}");
+                }
+                return false;
+            }
+
             private static void DoCheckFileProperties(FileInfo fileInfo)
             {
                 if (fileInfo == null || !fileInfo.Exists)
@@ -69,7 +99,10 @@ namespace Htc.Vita.XR
 
             private static string GetApplicationDataPath()
             {
-                var path = Environment.GetEnvironmentVariable("Temp");
+                var path = GetWritablePathFromEnvironmentVariable("TEMP")
+                        ?? GetWritablePathFromEnvironmentVariable("TMP")
+                        ?? GetWritablePathFromEnvironmentVariableLocalAppData()
+                        ?? GetWritablePathFromEnvironmentVariableUserProfile();
                 if (!string.IsNullOrWhiteSpace(path))
                 {
                     return Path.Combine(path, "Vita");
@@ -96,6 +129,51 @@ namespace Htc.Vita.XR
                 }
 
                 return Sha1ChecksumWithVersion[checksum];
+            }
+
+            private static string GetWritablePathFromEnvironmentVariable(string key)
+            {
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    return null;
+                }
+                var path = Environment.GetEnvironmentVariable(key);
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    return null;
+                }
+
+                return CheckPathWritable(path)
+                        ? path
+                        : null;
+            }
+
+            private static string GetWritablePathFromEnvironmentVariableLocalAppData()
+            {
+                var path = Environment.GetEnvironmentVariable("LOCALAPPDATA");
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    return null;
+                }
+
+                path = Path.Combine(path, "Temp");
+                return CheckPathWritable(path)
+                        ? path
+                        : null;
+            }
+
+            private static string GetWritablePathFromEnvironmentVariableUserProfile()
+            {
+                var path = Environment.GetEnvironmentVariable("USERPROFILE");
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    return null;
+                }
+
+                path = Path.Combine(path, "AppData", "Local", "Temp");
+                return CheckPathWritable(path)
+                        ? path
+                        : null;
             }
 
             private static void InitKnownVersion()
